@@ -4,7 +4,7 @@ import { useThree, useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { useMode } from './ModeContext';
 
-export default function InteractionController() {
+function InteractionController() {
   const { mouse, camera } = useThree();
   const { mode, setMode } = useMode();
   const mousePosition = useRef({ x: 0, y: 0 });
@@ -29,3 +29,5 @@ export default function InteractionController() {
   
   return null;
 }
+
+export default InteractionController;

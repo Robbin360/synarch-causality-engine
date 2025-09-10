@@ -1,7 +1,8 @@
 'use client';
 
-import { Html, ScrollControls, useScroll } from '@react-three/drei';
-import { useEffect, useRef, useState } from 'react';
+import { useScroll, Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useEffect, useRef } from 'react';
 import { useMode } from './ModeContext';
 
 export default function NarrativeController() {
@@ -11,25 +12,13 @@ export default function NarrativeController() {
   const manifestoRef = useRef<HTMLDivElement>(null);
   const noemaRef = useRef<HTMLDivElement>(null);
   const fulcrumRef = useRef<HTMLDivElement>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
   
-  // Update scroll progress state when scroll changes
-  useEffect(() => {
+  // Update opacity based on scroll position using useFrame
+  useFrame(() => {
     if (!scroll) return;
     
-    // Since we can't use useFrame here, we'll use a simple interval
-    // to check for scroll updates
-    const interval = setInterval(() => {
-      if (scroll.offset !== scrollProgress) {
-        setScrollProgress(scroll.offset);
-      }
-    }, 16); // ~60fps
+    const scrollProgress = scroll.offset;
     
-    return () => clearInterval(interval);
-  }, [scroll, scrollProgress]);
-  
-  // Update opacity based on scroll progress
-  useEffect(() => {
     // Update opacities based on scroll position
     if (synarchRef.current) {
       // Show SYNARCH text at the beginning
@@ -50,10 +39,10 @@ export default function NarrativeController() {
       // Show FULCRUM section
       fulcrumRef.current.style.opacity = scrollProgress >= 0.8 ? '1' : '0';
     }
-  }, [scrollProgress]);
+  });
 
   return (
-    <ScrollControls pages={4} distance={1}>
+    <>
       <Html
         ref={synarchRef}
         position={[0, 0, -5]}
@@ -128,6 +117,6 @@ export default function NarrativeController() {
           </p>
         </div>
       </Html>
-    </ScrollControls>
+    </>
   );
 }

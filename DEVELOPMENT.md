@@ -62,19 +62,22 @@ Main 3D engine component that manages the four phases of the experience:
 - Loading animation with vibrating particle
 - Explosion into 500k particle system
 - Continuous "ocean" animation
+- **REFactORED**: Canvas wrapped with ScrollControls for proper scroll integration
+- **REFactORED**: NarrativeController rendered inside Canvas for proper 3D integration
 
 ### NarrativeController.tsx
 Handles scroll-based narrative progression:
-- ScrollControls for camera movement
-- HTML overlays for text content
+- **REFactORED**: Uses Html components from @react-three/drei for 3D text positioning
+- **REFactORED**: Uses useScroll and useFrame hooks for scroll synchronization
+- **REFactORED**: Text positioned in 3D space along Z-axis
 - Opacity transitions based on scroll position
-- **FIXED**: Uses `useEffect` with `setInterval` to update scroll position instead of `useFrame` to avoid "R3F: Hooks can only be used within the Canvas component!" error
 
 ### InteractionController.tsx
 Manages user interactions:
 - Mouse position tracking
 - Mode switching (NOEMA/FULCRUM/IDLE)
 - Integration with ModeContext
+- **CORRECT**: Properly used within the Canvas component
 
 ### ModeContext.tsx
 Global state management for system modes:
@@ -99,7 +102,9 @@ Visual indicator during the loading phase:
 
 ## Recent Fixes
 
-- **Scroll Controls API**: Updated `NarrativeController.tsx` to use `useEffect` with `setInterval` for scroll position updates instead of `useFrame` to avoid "R3F: Hooks can only be used within the Canvas component!" error
+- **Architecture Refactor**: Reintegrated NarrativeController inside Canvas with proper ScrollControls wrapper
+- **3D Text Integration**: Refactored NarrativeController to use Html components for 3D text positioning
+- **Scroll Synchronization**: Implemented useScroll and useFrame for proper scroll position tracking
 
 ## Future Enhancements
 

@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.0.5] - 2025-09-10
+
+### Fixed
+- **Architecture Refactor**: Reverted incorrect separation of NarrativeController from Canvas
+- **3D Integration**: Reintegrated NarrativeController inside Canvas with proper ScrollControls wrapper
+- **Scroll Controls**: Restored ScrollControls in CausalityEngine.tsx to wrap the entire Canvas
+
+### Changed
+- **Component Structure**: Refactored page.tsx to contain only CausalityEngine component
+- **3D Text Rendering**: Refactored NarrativeController.tsx to use Html components for 3D text positioning
+- **Scroll Synchronization**: Implemented useScroll and useFrame in NarrativeController for proper scroll position tracking
+- **Text Positioning**: Positioned narrative text blocks along Z-axis in 3D space
+
+## [1.0.4] - 2025-09-10
+
+### Fixed
+- Corregido error crítico "R3F: Hooks can only be used within the Canvas component!" moviendo NarrativeController fuera del Canvas
+- Reemplazado drei's useScroll con eventos de scroll nativos en NarrativeController
+- Actualizado page.tsx para renderizar NarrativeController fuera del Canvas
+
+### Changed
+- Movido NarrativeController de dentro de Canvas en CausalityEngine.tsx a fuera del Canvas en page.tsx
+- Eliminado import de ScrollControls de NarrativeController
+- Reestructurado la arquitectura de componentes para separar correctamente componentes 3D de componentes HTML
+
 ## [1.0.3] - 2025-09-10
 
 ### Fixed
