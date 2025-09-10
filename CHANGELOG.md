@@ -1,10 +1,21 @@
 # Changelog
 
+## [1.0.3] - 2025-09-10
+
+### Fixed
+- Corregido error crítico "R3F: Hooks can only be used within the Canvas component!" en `NarrativeController.tsx`
+- Reemplazado `useFrame` con `useEffect` y `setInterval` para actualizar la posición del scroll fuera del contexto del Canvas
+- Eliminado `useFrame` import de `NarrativeController.tsx`
+
+### Changed
+- Actualizado la documentación en `DEVELOPMENT.md` para reflejar el cambio en el manejo de scroll updates
+- Añadido estado `scrollProgress` para manejar la posición del scroll
+
 ## [1.0.2] - 2025-09-10
 
 ### Fixed
 - Corregido error de compilación en `NarrativeController.tsx` donde se utilizaba `scroll.subscribe` que no existe en el tipo `ScrollControlsState`
-- Actualizado el componente para usar `useFrame` para actualizar las posiciones de scroll, que es el método correcto según la API de @react-three/drei
+- Actualizado el componente para usar `useFrame` para scroll position updates, que es el método correcto según la API de @react-three/drei
 
 ### Changed
 - Actualizado la documentación en `DEVELOPMENT.md` para reflejar el cambio en la API de scroll controls

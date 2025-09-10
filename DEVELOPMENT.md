@@ -68,7 +68,7 @@ Handles scroll-based narrative progression:
 - ScrollControls for camera movement
 - HTML overlays for text content
 - Opacity transitions based on scroll position
-- **FIXED**: Uses `useFrame` to update scroll position instead of incorrect `scroll.subscribe` or `scroll.onChange`
+- **FIXED**: Uses `useEffect` with `setInterval` to update scroll position instead of `useFrame` to avoid "R3F: Hooks can only be used within the Canvas component!" error
 
 ### InteractionController.tsx
 Manages user interactions:
@@ -99,7 +99,7 @@ Visual indicator during the loading phase:
 
 ## Recent Fixes
 
-- **Scroll Controls API**: Updated `NarrativeController.tsx` to use `useFrame` for scroll position updates instead of incorrect `scroll.subscribe` or `scroll.onChange` to match the current @react-three/drei API
+- **Scroll Controls API**: Updated `NarrativeController.tsx` to use `useEffect` with `setInterval` for scroll position updates instead of `useFrame` to avoid "R3F: Hooks can only be used within the Canvas component!" error
 
 ## Future Enhancements
 
