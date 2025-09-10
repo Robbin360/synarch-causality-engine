@@ -1,6 +1,7 @@
 'use client';
 
 import { Html, ScrollControls, useScroll } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { useMode } from './ModeContext';
 
@@ -12,36 +13,33 @@ export default function NarrativeController() {
   const noemaRef = useRef<HTMLDivElement>(null);
   const fulcrumRef = useRef<HTMLDivElement>(null);
   
-  // Update opacity based on scroll position
-  useEffect(() => {
-    // Use scroll.subscribe instead of scroll.onChange
-    const unsubscribe = scroll.subscribe(() => {
-      const scrollProgress = scroll.offset;
-      
-      // Update opacities based on scroll position
-      if (synarchRef.current) {
-        // Show SYNARCH text at the beginning
-        synarchRef.current.style.opacity = scrollProgress < 0.2 ? '1' : '0';
-      }
-      
-      if (manifestoRef.current) {
-        // Show manifesto in the middle
-        manifestoRef.current.style.opacity = (scrollProgress >= 0.2 && scrollProgress < 0.6) ? '1' : '0';
-      }
-      
-      if (noemaRef.current) {
-        // Show NOEMA section
-        noemaRef.current.style.opacity = (scrollProgress >= 0.6 && scrollProgress < 0.8) ? '1' : '0';
-      }
-      
-      if (fulcrumRef.current) {
-        // Show FULCRUM section
-        fulcrumRef.current.style.opacity = scrollProgress >= 0.8 ? '1' : '0';
-      }
-    });
+  // Update opacity based on scroll position using useFrame
+  useFrame(() => {
+    if (!scroll) return;
     
-    return () => unsubscribe();
-  }, [scroll]);
+    const scrollProgress = scroll.offset;
+    
+    // Update opacities based on scroll position
+    if (synarchRef.current) {
+      // Show SYNARCH text at the beginning
+      synarchRef.current.style.opacity = scrollProgress < 0.2 ? '1' : '0';
+    }
+    
+    if (manifestoRef.current) {
+      // Show manifesto in the middle
+      manifestoRef.current.style.opacity = (scrollProgress >= 0.2 && scrollProgress < 0.6) ? '1' : '0';
+    }
+    
+    if (noemaRef.current) {
+      // Show NOEMA section
+      noemaRef.current.style.opacity = (scrollProgress >= 0.6 && scrollProgress < 0.8) ? '1' : '0';
+    }
+    
+    if (fulcrumRef.current) {
+      // Show FULCRUM section
+      fulcrumRef.current.style.opacity = scrollProgress >= 0.8 ? '1' : '0';
+    }
+  });
 
   return (
     <ScrollControls pages={4} distance={1}>

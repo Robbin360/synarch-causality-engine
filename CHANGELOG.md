@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.0.2] - 2025-09-10
+
+### Fixed
+- Corregido error de compilación en `NarrativeController.tsx` donde se utilizaba `scroll.subscribe` que no existe en el tipo `ScrollControlsState`
+- Actualizado el componente para usar `useFrame` para actualizar las posiciones de scroll, que es el método correcto según la API de @react-three/drei
+
+### Changed
+- Actualizado la documentación en `DEVELOPMENT.md` para reflejar el cambio en la API de scroll controls
+- Añadido `useFrame` import en `NarrativeController.tsx`
+
 ## [1.0.1] - 2025-09-09
 
 ### Fixed

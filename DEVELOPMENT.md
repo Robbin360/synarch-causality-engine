@@ -68,7 +68,7 @@ Handles scroll-based narrative progression:
 - ScrollControls for camera movement
 - HTML overlays for text content
 - Opacity transitions based on scroll position
-- **FIXED**: Uses `scroll.subscribe` instead of `scroll.onChange` for compatibility with latest @react-three/drei
+- **FIXED**: Uses `useFrame` to update scroll position instead of incorrect `scroll.subscribe` or `scroll.onChange`
 
 ### InteractionController.tsx
 Manages user interactions:
@@ -99,7 +99,7 @@ Visual indicator during the loading phase:
 
 ## Recent Fixes
 
-- **Scroll Controls API**: Updated `NarrativeController.tsx` to use `scroll.subscribe` instead of `scroll.onChange` to match the current @react-three/drei API
+- **Scroll Controls API**: Updated `NarrativeController.tsx` to use `useFrame` for scroll position updates instead of incorrect `scroll.subscribe` or `scroll.onChange` to match the current @react-three/drei API
 
 ## Future Enhancements
 
