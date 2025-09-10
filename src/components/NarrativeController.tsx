@@ -14,7 +14,8 @@ export default function NarrativeController() {
   
   // Update opacity based on scroll position
   useEffect(() => {
-    const unsubscribe = scroll.onChange(() => {
+    // Use scroll.subscribe instead of scroll.onChange
+    const unsubscribe = scroll.subscribe(() => {
       const scrollProgress = scroll.offset;
       
       // Update opacities based on scroll position

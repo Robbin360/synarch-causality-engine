@@ -68,6 +68,7 @@ Handles scroll-based narrative progression:
 - ScrollControls for camera movement
 - HTML overlays for text content
 - Opacity transitions based on scroll position
+- **FIXED**: Uses `scroll.subscribe` instead of `scroll.onChange` for compatibility with latest @react-three/drei
 
 ### InteractionController.tsx
 Manages user interactions:
@@ -95,6 +96,10 @@ Visual indicator during the loading phase:
 3. **Responsive Design**: The canvas fills the entire screen and adapts to different viewport sizes.
 
 4. **Type Safety**: Full TypeScript support with proper typing for all components and hooks.
+
+## Recent Fixes
+
+- **Scroll Controls API**: Updated `NarrativeController.tsx` to use `scroll.subscribe` instead of `scroll.onChange` to match the current @react-three/drei API
 
 ## Future Enhancements
 

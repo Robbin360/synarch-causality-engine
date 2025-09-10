@@ -1,0 +1,31 @@
+# Changelog
+
+## [1.0.1] - 2025-09-09
+
+### Fixed
+- Corregido error de compilación en `NarrativeController.tsx` donde se utilizaba `scroll.onChange` en lugar de `scroll.subscribe` para ser compatible con la API actual de @react-three/drei
+
+### Changed
+- Actualizado la documentación en `DEVELOPMENT.md` para reflejar el cambio en la API de scroll controls
+- Añadido script de validación `validate.js` para verificar errores comunes sin necesidad de una compilación completa
+
+## [1.0.0] - 2025-09-09
+
+### Added
+- Implementación inicial del SYNARCH Causality Engine
+- Configuración completa del proyecto Next.js 14+ con TypeScript
+- Componente principal `CausalityEngine.tsx` con las cuatro fases:
+  - Singularidad inicial
+  - Animación de carga
+  - Explosión de partículas
+  - Océano de datos
+- Controlador narrativo `NarrativeController.tsx` con desplazamiento controlado por scroll
+- Controlador de interacción `InteractionController.tsx` para el seguimiento del ratón
+- Contexto global `ModeContext.tsx` para la gestión del estado entre modos
+- Indicador de carga `LoadingIndicator.tsx` para la fase de inicialización
+- Documentación completa del proyecto:
+  - README.md: Descripción general y características
+  - DEVELOPMENT.md: Guía de desarrollo y configuración
+  - ARCHITECTURE.md: Documentación de arquitectura
+  - COMPONENTS.md: Diagramas y jerarquía de componentes
+  - CHANGELOG.md: Registro de cambios
