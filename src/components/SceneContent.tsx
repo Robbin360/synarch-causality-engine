@@ -1,9 +1,11 @@
 'use client'
 
 import { useFrame, useThree } from '@react-three/fiber'
-import { useScroll, Html, Points, PointMaterial, OrbitControls } from '@react-three/drei'
-import { useRef, useMemo } from 'react'
-import * as THREE from 'three'
+import { useScroll, Html, OrbitControls } from '@react-three/drei'
+import { useRef } from 'react'
+import { ParticleEngine } from './ParticleEngine'
+import { useModeStore } from '../stores/modeStore'
+import InteractionController from './InteractionController'
 
 function Narrative() {
   const scroll = useScroll()
@@ -27,61 +29,27 @@ function Narrative() {
 }
 
 export function SceneContent() {
-  const points = useRef<THREE.Points>(null)
   const { viewport } = useThree()
-  const particleCount = 10000
-  
-  // Generate particle positions
-  const positions = useMemo(() => {
-    const positions = new Float32Array(particleCount * 3)
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 10
-      positions[i + 1] = (Math.random() - 0.5) * 10
-      positions[i + 2] = (Math.random() - 0.5) * 10
-    }
-    return positions
-  }, [])
+  const { currentMode, mousePosition, setMousePosition } = useModeStore()
 
-  // Animate particles
-  useFrame(({ clock }) => {
-    if (!points.current) return
-    
-    const positions = points.current.geometry.attributes.position.array as Float32Array
-    const time = clock.getElapsedTime()
-    
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      const i3 = i / 3
-      positions[i] += Math.sin(time * 0.1 + i3 * 0.001) * 0.005
-      positions[i + 1] += Math.cos(time * 0.15 + i3 * 0.001) * 0.005
-      positions[i + 2] += Math.sin(time * 0.2 + i3 * 0.001) * 0.005
+  // Track mouse position for particle interaction
+  useFrame((state) => {
+    if (state.mouse) {
+      setMousePosition([state.mouse.x, state.mouse.y])
     }
-    
-    points.current.geometry.attributes.position.needsUpdate = true
   })
 
   return (
     <>
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} />
+      <ambientLight intensity={0.3} />
+      <pointLight position={[10, 10, 10]} intensity={0.5} />
       
-      <Points ref={points}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={particleCount}
-            array={positions}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <PointMaterial
-          color="#0066ff"
-          size={0.02}
-          sizeAttenuation={true}
-          transparent={true}
-          opacity={0.8}
-        />
-      </Points>
+      <ParticleEngine 
+        mode={currentMode}
+        mousePosition={mousePosition}
+      />
       
+      <InteractionController />
       <Narrative />
       <OrbitControls enableZoom={true} enablePan={true} />
     </>
