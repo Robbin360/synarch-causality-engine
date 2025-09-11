@@ -1,17 +1,22 @@
-'use client';
+'use client'
 
-import dynamic from 'next/dynamic';
-import { ModeProvider } from '@/components/ModeContext';
+import dynamic from 'next/dynamic'
+import { Suspense } from 'react'
 
-// Dynamically import the CausalityEngine component with SSR disabled
-const CausalityEngine = dynamic(() => import('@/components/CausalityEngine'), {
-  ssr: false,
-});
+const CausalityEngine = dynamic(
+  () => import('@/components/CausalityEngine').then((mod) => mod.default || mod.CausalityEngine),
+  {
+    ssr: false,
+    loading: () => <div style={{ backgroundColor: 'black', width: '100vw', height: '100vh' }} />,
+  }
+)
 
 export default function HomePage() {
   return (
-    <ModeProvider>
-      <CausalityEngine />
-    </ModeProvider>
-  );
+    <main style={{ width: '100vw', height: '100vh', margin: 0, padding: 0, background: 'black' }}>
+      <Suspense fallback={null}>
+        <CausalityEngine />
+      </Suspense>
+    </main>
+  )
 }
