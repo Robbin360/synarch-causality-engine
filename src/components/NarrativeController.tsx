@@ -3,7 +3,7 @@
 import { useScroll, Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
-import { useMode } from './ModeContext';
+import { useMode } from '@/components/ModeContext';
 
 export default function NarrativeController() {
   const scroll = useScroll();

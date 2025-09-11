@@ -4,8 +4,7 @@ import { useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { useRef } from 'react'
 import { ParticleEngine } from './ParticleEngine'
-import InteractionController from './InteractionController'
-import { useMode } from './ModeContext'
+import { useMode } from '@/components/ModeContext'
 
 export function SceneContent() {
   const { mode } = useMode()
@@ -28,7 +27,6 @@ export function SceneContent() {
         mousePosition={mouseRef.current}
       />
       
-      <InteractionController />
       <OrbitControls enableZoom={true} enablePan={true} />
     </>
   )
