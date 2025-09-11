@@ -18,9 +18,11 @@
     "three": "^0.160.1"
   },
   "devDependencies": {
+    "@types/lodash": "^4.17.20",
     "@types/node": "^20.19.13",
     "@types/react": "^18.3.24",
     "@types/react-dom": "^18.3.7",
+    "@types/three": "^0.180.0",
     "typescript": "^5.9.2"
   },
   "description": "This project implements an interactive 3D experience called the \"Causality Engine\" using Next.js 14+, React 18, TypeScript, and Three.js with React Three Fiber.",

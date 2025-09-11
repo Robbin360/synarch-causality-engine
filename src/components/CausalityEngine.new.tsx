@@ -14,5 +14,3 @@ export function CausalityEngine() {
     </Canvas>
   )
 }
-
-export default CausalityEngine

@@ -1,21 +1,74 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-body {
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  font-family: -apple-system, BlinkMacSystemFont, Avenir Next, Avenir,
-    Helvetica, sans-serif;
 }
 
 html,
 body,
 #__next {
-  height: 100%;
   width: 100%;
+  height: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
+  background: #000000;
+}
+
+/* Ensure canvas takes full viewport */
+canvas {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* Typography */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #ffffff;
+  line-height: 1.5;
+}
+
+/* Remove default button styles */
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+
+/* Remove focus outline for mouse users but keep for keyboard navigation */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
