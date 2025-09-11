@@ -4,10 +4,10 @@ import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 
 const CausalityEngine = dynamic(
-  () => import('@/components/CausalityEngine').then((mod) => mod.default || mod.CausalityEngine),
+  () => import('@/components/CausalityEngine').then((mod) => mod.CausalityEngine || mod.default),
   {
     ssr: false,
-    loading: () => <div style={{ backgroundColor: 'black', width: '100vw', height: '100vh' }} />,
+    loading: () => <div style={{ backgroundColor: 'black', width: '100vw', height: '100vh' }}>Loading...</div>,
   }
 )
 

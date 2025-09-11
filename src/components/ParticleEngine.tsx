@@ -10,7 +10,6 @@ uniform float uTime;
 uniform float uAnimationProgress;
 uniform vec2 uMouse;
 uniform int uMode;
-uniform float uBigBangProgress;
 uniform float uModeTransition;
 
 attribute vec3 aOriginalPosition;
@@ -102,72 +101,65 @@ float easeOutCubic(float t) {
 void main() {
   vec3 pos = position;
   
-  // Big Bang animation
-  if (uBigBangProgress < 1.0) {
-    // Animate from origin to final position
-    float easedProgress = easeOutCubic(uBigBangProgress);
-    pos = mix(vec3(0.0), aOriginalPosition, easedProgress);
-  } else {
-    // Normal organic movement with noise
-    pos = aOriginalPosition;
+  // Normal organic movement with noise
+  pos = aOriginalPosition;
+  
+  // Mode-specific transformations
+  if (uMode == 1) { // NOEMA - Grid scanning animation
+    float gridSize = 80.0;
+    float scanSpeed = 2.0;
+    float scanPosition = mod(uTime * scanSpeed, gridSize) - gridSize * 0.5;
     
-    // Mode-specific transformations
-    if (uMode == 1) { // NOEMA - Grid scanning animation
-      float gridSize = 80.0;
-      float scanSpeed = 2.0;
-      float scanPosition = mod(uTime * scanSpeed, gridSize) - gridSize * 0.5;
-      
-      // Create grid alignment effect
-      vec3 gridPos = floor(pos / 2.0) * 2.0;
-      float distanceToScan = abs(pos.x - scanPosition);
-      float gridInfluence = 1.0 - smoothstep(0.0, 5.0, distanceToScan);
-      
-      pos = mix(pos, gridPos, gridInfluence * uModeTransition * 0.8);
-      
-      // Add pulsing effect
-      float pulse = sin(uTime * 8.0 + aParticleId * 0.1) * 0.2;
-      pos += vec3(0.0, pulse * gridInfluence, 0.0);
-      
-    } else if (uMode == 2) { // FULCRUM - Shockwave animation
-      float waveSpeed = 3.0;
-      float waveRadius = mod(uTime * waveSpeed, 30.0);
-      float distanceFromCenter = length(pos);
-      
-      // Freeze effect before shockwave
-      float freezeZone = smoothstep(waveRadius - 2.0, waveRadius, distanceFromCenter);
-      float shockwaveEffect = smoothstep(waveRadius, waveRadius + 3.0, distanceFromCenter);
-      
-      // Radial explosion effect
-      vec3 direction = normalize(pos);
-      float explosionForce = (1.0 - shockwaveEffect) * freezeZone * 3.0;
-      pos += direction * explosionForce * uModeTransition;
-      
-      // Add crimson glow pulsing
-      float crimsonPulse = sin(uTime * 12.0) * 0.1;
-      pos += direction * crimsonPulse * uModeTransition;
-    }
+    // Create grid alignment effect
+    vec3 gridPos = floor(pos / 2.0) * 2.0;
+    float distanceToScan = abs(pos.x - scanPosition);
+    float gridInfluence = 1.0 - smoothstep(0.0, 5.0, distanceToScan);
     
-    // Base organic noise movement (reduced when in special modes)
-    float noiseScale = 0.1;
-    float timeScale = 0.5;
-    vec3 noiseInput = pos * noiseScale + uTime * timeScale;
+    pos = mix(pos, gridPos, gridInfluence * uModeTransition * 0.8);
     
-    vec3 noiseOffset = vec3(
-      snoise(noiseInput),
-      snoise(noiseInput + vec3(100.0)),
-      snoise(noiseInput + vec3(200.0))
-    ) * 0.5 * (1.0 - uModeTransition * 0.7);
+    // Add pulsing effect
+    float pulse = sin(uTime * 8.0 + aParticleId * 0.1) * 0.2;
+    pos += vec3(0.0, pulse * gridInfluence, 0.0);
     
-    pos += noiseOffset;
+  } else if (uMode == 2) { // FULCRUM - Shockwave animation
+    float waveSpeed = 3.0;
+    float waveRadius = mod(uTime * waveSpeed, 30.0);
+    float distanceFromCenter = length(pos);
     
-    // Mouse interaction (gravity effect)
-    vec2 mousePos = uMouse * 2.0 - 1.0;
-    vec3 mouseWorld = vec3(mousePos * 10.0, 0.0);
-    float distanceToMouse = distance(pos, mouseWorld);
-    float influence = 1.0 / (1.0 + distanceToMouse * 0.1);
-    vec3 direction = normalize(pos - mouseWorld);
-    pos += direction * influence * 0.5;
+    // Freeze effect before shockwave
+    float freezeZone = smoothstep(waveRadius - 2.0, waveRadius, distanceFromCenter);
+    float shockwaveEffect = smoothstep(waveRadius, waveRadius + 3.0, distanceFromCenter);
+    
+    // Radial explosion effect
+    vec3 direction = normalize(pos);
+    float explosionForce = (1.0 - shockwaveEffect) * freezeZone * 3.0;
+    pos += direction * explosionForce * uModeTransition;
+    
+    // Add crimson glow pulsing
+    float crimsonPulse = sin(uTime * 12.0) * 0.1;
+    pos += direction * crimsonPulse * uModeTransition;
   }
+  
+  // Base organic noise movement (reduced when in special modes)
+  float noiseScale = 0.1;
+  float timeScale = 0.5;
+  vec3 noiseInput = pos * noiseScale + uTime * timeScale;
+  
+  vec3 noiseOffset = vec3(
+    snoise(noiseInput),
+    snoise(noiseInput + vec3(100.0)),
+    snoise(noiseInput + vec3(200.0))
+  ) * 0.5 * (1.0 - uModeTransition * 0.7);
+  
+  pos += noiseOffset;
+  
+  // Mouse interaction (gravity effect)
+  vec2 mousePos = uMouse * 2.0 - 1.0;
+  vec3 mouseWorld = vec3(mousePos * 10.0, 0.0);
+  float distanceToMouse = distance(pos, mouseWorld);
+  float influence = 1.0 / (1.0 + distanceToMouse * 0.1);
+  vec3 direction = normalize(pos - mouseWorld);
+  pos += direction * influence * 0.5;
   
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
   gl_PointSize = 2.0;
@@ -208,12 +200,11 @@ interface ParticleEngineProps {
 export function ParticleEngine({ mode = 'IDLE', mousePosition = [0, 0] }: ParticleEngineProps) {
   const meshRef = useRef<THREE.Points>(null)
   const materialRef = useRef<THREE.ShaderMaterial>(null)
-  const [animationPhase, setAnimationPhase] = useState<'tension' | 'explosion' | 'stable'>('tension')
-  const [startTime] = useState(() => Date.now())
+  // Removed animation phase and start time as they were part of the Big Bang animation
   
   const particleCount = 500000
   
-  // Generate particle positions
+  // Generate particle positions in a sphere
   const { positions, originalPositions, particleIds } = useMemo(() => {
     const positions = new Float32Array(particleCount * 3)
     const originalPositions = new Float32Array(particleCount * 3)
@@ -241,7 +232,7 @@ export function ParticleEngine({ mode = 'IDLE', mousePosition = [0, 0] }: Partic
     }
     
     return { positions, originalPositions, particleIds }
-  }, [])
+  }, [particleCount])
   
   // Shader material
   const shaderMaterial = useMemo(() => {
@@ -253,7 +244,6 @@ export function ParticleEngine({ mode = 'IDLE', mousePosition = [0, 0] }: Partic
         uAnimationProgress: { value: 0 },
         uMouse: { value: new THREE.Vector2(0, 0) },
         uMode: { value: 0 },
-        uBigBangProgress: { value: 0 },
         uModeTransition: { value: 0 }
       },
       transparent: true,
@@ -262,113 +252,54 @@ export function ParticleEngine({ mode = 'IDLE', mousePosition = [0, 0] }: Partic
     })
   }, [])
   
-  // Animation logic
-  useFrame((state) => {
+  // Animation and interaction logic
+  useFrame(({ clock }) => {
     if (!materialRef.current) return
     
-    const elapsed = (Date.now() - startTime) / 1000
     const uniforms = materialRef.current.uniforms
     
-    uniforms.uTime.value = state.clock.elapsedTime
+    // Update time for animations
+    uniforms.uTime.value = clock.getElapsedTime()
+    
+    // Update mouse position for interaction
     uniforms.uMouse.value.set(mousePosition[0], mousePosition[1])
     
-    // Mode mapping and transition
+    // Map mode to shader values (0=IDLE, 1=NOEMA, 2=FULCRUM)
     const modeValue = mode === 'NOEMA' ? 1 : mode === 'FULCRUM' ? 2 : 0
     uniforms.uMode.value = modeValue
     
-    // Smooth mode transition
+    // Smooth transition between modes
     const targetTransition = mode !== 'IDLE' ? 1.0 : 0.0
     uniforms.uModeTransition.value += (targetTransition - uniforms.uModeTransition.value) * 0.05
-    
-    // Big Bang animation phases
-    if (elapsed < 2.0) {
-      // Tension phase (0-2s): just the singularity
-      setAnimationPhase('tension')
-      uniforms.uBigBangProgress.value = 0
-    } else if (elapsed < 3.0) {
-      // Explosion phase (2-3s): particles expand from origin
-      setAnimationPhase('explosion')
-      const explosionProgress = (elapsed - 2.0) / 1.0
-      uniforms.uBigBangProgress.value = explosionProgress
-    } else {
-      // Stable phase (3s+): normal organic movement
-      setAnimationPhase('stable')
-      uniforms.uBigBangProgress.value = 1.0
-    }
   })
   
-  // Singularity component for tension phase
-  const Singularity = () => {
-    const singularityRef = useRef<THREE.Points>(null)
-    
-    useFrame((state) => {
-      if (!singularityRef.current || animationPhase !== 'tension') return
-      
-      const time = state.clock.elapsedTime
-      const scale = 1 + Math.sin(time * 8) * 0.3
-      const opacity = 0.8 + Math.sin(time * 12) * 0.2
-      
-      singularityRef.current.scale.setScalar(scale)
-      if (singularityRef.current.material instanceof THREE.PointsMaterial) {
-        singularityRef.current.material.opacity = opacity
-      }
-    })
-    
-    if (animationPhase !== 'tension') return null
-    
-    return (
-      <points ref={singularityRef}>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            count={1}
-            array={new Float32Array([0, 0, 0])}
-            itemSize={3}
-          />
-        </bufferGeometry>
-        <pointsMaterial
-          color="#ffffff"
-          size={20}
-          transparent
-          opacity={0.8}
-          sizeAttenuation={false}
-        />
-      </points>
-    )
-  }
-  
   return (
-    <>
-      <Singularity />
-      {animationPhase !== 'tension' && (
-        <points ref={meshRef}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={particleCount}
-              array={positions}
-              itemSize={3}
-            />
-            <bufferAttribute
-              attach="attributes-aOriginalPosition"
-              count={particleCount}
-              array={originalPositions}
-              itemSize={3}
-            />
-            <bufferAttribute
-              attach="attributes-aParticleId"
-              count={particleCount}
-              array={particleIds}
-              itemSize={1}
-            />
-          </bufferGeometry>
-          <shaderMaterial
-            ref={materialRef}
-            attach="material"
-            args={[shaderMaterial]}
-          />
-        </points>
-      )}
-    </>
+    <points ref={meshRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particleCount}
+          array={positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-aOriginalPosition"
+          count={particleCount}
+          array={originalPositions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-aParticleId"
+          count={particleCount}
+          array={particleIds}
+          itemSize={1}
+        />
+      </bufferGeometry>
+      <shaderMaterial
+        ref={materialRef}
+        attach="material"
+        args={[shaderMaterial]}
+      />
+    </points>
   )
 }

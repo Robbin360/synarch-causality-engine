@@ -2,7 +2,7 @@
 
 import { useScroll, Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useMode } from './ModeContext';
 
 export default function NarrativeController() {
@@ -16,104 +16,82 @@ export default function NarrativeController() {
   // Update opacity based on scroll position using useFrame
   useFrame(() => {
     if (!scroll) return;
-    
-    const scrollProgress = scroll.offset;
-    
-    // Update opacities based on scroll position
-    if (synarchRef.current) {
-      // Show SYNARCH text at the beginning
-      synarchRef.current.style.opacity = scrollProgress < 0.2 ? '1' : '0';
-    }
-    
-    if (manifestoRef.current) {
-      // Show manifesto in the middle
-      manifestoRef.current.style.opacity = (scrollProgress >= 0.2 && scrollProgress < 0.6) ? '1' : '0';
-    }
-    
-    if (noemaRef.current) {
-      // Show NOEMA section
-      noemaRef.current.style.opacity = (scrollProgress >= 0.6 && scrollProgress < 0.8) ? '1' : '0';
-    }
-    
-    if (fulcrumRef.current) {
-      // Show FULCRUM section
-      fulcrumRef.current.style.opacity = scrollProgress >= 0.8 ? '1' : '0';
-    }
+    const s = scroll.offset;
+    if (synarchRef.current) synarchRef.current.style.opacity = s < 0.2 ? '1' : '0';
+    if (manifestoRef.current) manifestoRef.current.style.opacity = (s >= 0.2 && s < 0.6) ? '1' : '0';
+    if (noemaRef.current) noemaRef.current.style.opacity = (s >= 0.6 && s < 0.8) ? '1' : '0';
+    if (fulcrumRef.current) fulcrumRef.current.style.opacity = s >= 0.8 ? '1' : '0';
   });
+
+  const baseBox: React.CSSProperties = {
+    color: '#ffffff',
+    width: '60vw',
+    textAlign: 'center',
+    pointerEvents: 'auto',
+    transition: 'opacity 0.3s ease',
+    background: 'rgba(0,0,0,0.25)',
+    padding: '16px 20px',
+    borderRadius: 8,
+    border: '1px solid rgba(255,255,255,0.08)'
+  };
+  const h1: React.CSSProperties = { fontSize: '40px', fontWeight: 700, letterSpacing: '2px' };
+  const h2: React.CSSProperties = { fontSize: '28px', fontWeight: 700, marginBottom: 12 };
+  const p: React.CSSProperties = { fontSize: '16px', opacity: 0.9, lineHeight: 1.6 };
+  const cta: React.CSSProperties = { display: 'inline-block', marginTop: 8, padding: '6px 10px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer' };
 
   return (
     <>
-      <Html
-        ref={synarchRef}
-        position={[0, 0, -5]}
-        center
-        className="text-white text-4xl font-bold pointer-events-none"
-      >
-        <div className="text-center">
-          <h1>SYNARCH</h1>
-          <p className="text-xl mt-4">Causality Engine</p>
+      <Html ref={synarchRef} position={[0, 0, -5]} center>
+        <div style={baseBox}>
+          <h1 style={h1}>SYNARCH</h1>
+          <p style={{ ...p, marginTop: 8 }}>Motor de Causalidad para un Monopolio Tecnológico</p>
         </div>
       </Html>
-      
-      <Html
-        ref={manifestoRef}
-        position={[0, 0, -10]}
-        center
-        className="text-white text-lg max-w-2xl pointer-events-none"
-      >
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">The Manifesto</h2>
-          <p className="mb-4">
-            We are the architects of inevitability, weaving the fabric of reality through 
-            computational causality and deterministic chaos.
+
+      <Html ref={manifestoRef} position={[0, 0, -10]} center>
+        <div style={baseBox}>
+          <h2 style={h2}>Manifiesto</h2>
+          <p style={p}>
+            Controlamos la infraestructura cognitiva: datos, cómputo y atención. La causalidad
+            no es accidente; es diseño. Cada partícula obedece a un vector de poder programado.
           </p>
-          <p>
-            In the ocean of data, we find meaning. In the flow of information, we discover 
-            the hidden patterns that govern existence.
+          <p style={{ ...p, marginTop: 8 }}>
+            Dominio no es secreto: es eficiencia impuesta. Si no optimiza el sistema, se disuelve
+            en el océano de información.
           </p>
         </div>
       </Html>
-      
-      <Html
-        ref={noemaRef}
-        position={[0, 0, -15]}
-        center
-        className="text-white text-lg max-w-2xl"
-      >
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">NOEMA</h2>
-          <p className="mb-4">
-            The conscious aspect of our system, where thought patterns emerge from 
-            the complex interactions of data particles.
+
+      <Html ref={noemaRef} position={[0, 0, -15]} center>
+        <div style={baseBox}>
+          <h2 style={h2}>NOEMA</h2>
+          <p style={p}>
+            La conciencia sintética del monopolio: alineamos percepciones, estabilizamos
+            narrativas y proyectamos inevitabilidades.
           </p>
-          <p 
-            className="inline-block cursor-pointer hover:text-green-400 transition-colors p-2"
+          <p
+            style={{ ...cta, color: '#00ff88' }}
             onMouseEnter={() => setMode('NOEMA')}
             onMouseLeave={() => setMode('IDLE')}
           >
-            Engage with NOEMA to explore the realm of digital consciousness.
+            Activar vector NOEMA
           </p>
         </div>
       </Html>
-      
-      <Html
-        ref={fulcrumRef}
-        position={[0, 0, -20]}
-        center
-        className="text-white text-lg max-w-2xl"
-      >
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">FULCRUM</h2>
-          <p className="mb-4">
-            The point of balance between order and chaos, where the system can 
-            pivot between different states of reality.
+
+      <Html ref={fulcrumRef} position={[0, 0, -20]} center>
+        <div style={baseBox}>
+          <h2 style={h2}>FULCRUM</h2>
+          <p style={p}>
+            Punto de palanca: micro‑glitches calibrados para reorientar el sistema hacia el
+            máximo rendimiento y captura.
           </p>
-          <p 
-            className="inline-block cursor-pointer hover:text-red-500 transition-colors p-2"
+          <p
+            style={{ ...cta, color: '#ff3355' }}
             onMouseEnter={() => setMode('FULCRUM')}
             onMouseLeave={() => setMode('IDLE')}
           >
-            Activate FULCRUM to experience the glitch in the matrix.
+            Desplegar FULCRUM
           </p>
         </div>
       </Html>

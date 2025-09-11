@@ -1,41 +1,20 @@
 'use client'
 
-import { useFrame, useThree } from '@react-three/fiber'
-import { useScroll, Html, OrbitControls } from '@react-three/drei'
+import { useFrame } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
 import { useRef } from 'react'
 import { ParticleEngine } from './ParticleEngine'
-import { useModeStore } from '../stores/modeStore'
 import InteractionController from './InteractionController'
-
-function Narrative() {
-  const scroll = useScroll()
-  const textRef = useRef<HTMLDivElement>(null!)
-
-  useFrame(() => {
-    const opacity = scroll.range(1 / 5, 2 / 5)
-    if (textRef.current) {
-      textRef.current.style.opacity = `${opacity}`
-    }
-  })
-
-  return (
-    <Html position={[0, 0, 0]}>
-      <div ref={textRef} style={{ color: 'white', width: '50vw', textAlign: 'center', transition: 'opacity 0.2s' }}>
-        <h2>THESIS</h2>
-        <p>1. El Sistema como Entidad...</p>
-      </div>
-    </Html>
-  )
-}
+import { useMode } from './ModeContext'
 
 export function SceneContent() {
-  const { viewport } = useThree()
-  const { currentMode, mousePosition, setMousePosition } = useModeStore()
+  const { mode } = useMode()
+  const mouseRef = useRef<[number, number]>([0, 0])
 
   // Track mouse position for particle interaction
   useFrame((state) => {
     if (state.mouse) {
-      setMousePosition([state.mouse.x, state.mouse.y])
+      mouseRef.current = [state.mouse.x, state.mouse.y]
     }
   })
 
@@ -45,12 +24,11 @@ export function SceneContent() {
       <pointLight position={[10, 10, 10]} intensity={0.5} />
       
       <ParticleEngine 
-        mode={currentMode}
-        mousePosition={mousePosition}
+        mode={mode}
+        mousePosition={mouseRef.current}
       />
       
       <InteractionController />
-      <Narrative />
       <OrbitControls enableZoom={true} enablePan={true} />
     </>
   )
